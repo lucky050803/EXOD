@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+import random
 
 class GameGUI:
     def __init__(self, game):
@@ -9,6 +10,8 @@ class GameGUI:
         self.root = tk.Tk()
         self.root.title("Mini RPG Amélioré")
         self.root.geometry("800x600")
+        self.root.state('zoomed')
+        
         self.root.configure(bg="#222222")
 
         self.font = ("Consolas", 11)
@@ -25,12 +28,28 @@ class GameGUI:
 
         # CARTE
         map_frame = tk.LabelFrame(top_frame, text="Carte", font=self.font,
-                                  fg="white", bg="#333333", bd=2)
+                                fg="white", bg="#333333", bd=2)
         map_frame.pack(side="left", padx=10)
 
-        self.map_label = tk.Label(map_frame, text="", font=("Consolas", 14),
-                                  fg="white", bg="#333333", justify="left")
-        self.map_label.pack(padx=10, pady=10)
+        self.map_cells = []
+        for j in range(self.game.dungeon.size):
+            row = []
+            for i in range(self.game.dungeon.size):
+                cell = tk.Label(
+                    map_frame,
+                    text="  ",
+                    width=2,
+                    height=1,
+                    bg="#555555",
+                    fg="white",
+                    font=("Consolas", 16),
+                    bd=1,
+                    relief="solid"
+                )
+                cell.grid(row=j, column=i, padx=1, pady=1)
+                row.append(cell)
+            self.map_cells.append(row)
+
 
         # STATISTIQUES
         stats_frame = tk.LabelFrame(top_frame, text="Statistiques", font=self.font,
@@ -69,10 +88,10 @@ class GameGUI:
                              bg="#444444", fg="white", activebackground="#555555",
                              width=8)
 
-        btn("Nord", lambda: self.move(0, -1)).grid(row=0, column=1)
-        btn("Ouest", lambda: self.move(-1, 0)).grid(row=1, column=0)
-        btn("Est",  lambda: self.move(1, 0)).grid(row=1, column=2)
-        btn("Sud",  lambda: self.move(0, 1)).grid(row=2, column=1)
+        btn("↑", lambda: self.move(0, -1)).grid(row=0, column=1)
+        btn("←", lambda: self.move(-1, 0)).grid(row=1, column=0)
+        btn("→",  lambda: self.move(1, 0)).grid(row=1, column=2)
+        btn("↓",  lambda: self.move(0, 1)).grid(row=2, column=1)
 
         # Actions
         action_frame = tk.Frame(bottom_frame, bg="#222222")
@@ -86,12 +105,27 @@ class GameGUI:
         act("Inventaire", self.open_inventory).pack(side="left", padx=5)
         act("Sauver", self.save).pack(side="left", padx=5)
         act("Charger", self.load).pack(side="left", padx=5)
+        act("Sortir", self.sortir).pack(side="left", padx=5)
 
         # Premier affichage
         self.show("Bienvenue dans le donjon !")
         self.update_map()
         self.update_stats()
 
+        # Boss
+        position = random.randint(1, 4)
+        if position == 1:
+            self.boss_posx = 0
+            self.boss_posy = 0
+        if position == 2:
+            self.boss_posx = self.game.dungeon.size 
+            self.boss_posy = 0
+        if position == 3:
+            self.boss_posx = 0
+            self.boss_posy = self.game.dungeon.size
+        if position == 4:
+            self.boss_posx = self.game.dungeon.size
+            self.boss_posy = self.game.dungeon.size
     # ===============================================
     #   FONCTIONS D'AFFICHAGE
     # ===============================================
@@ -112,34 +146,41 @@ class GameGUI:
 
     def update_map(self):
         d = self.game.dungeon
-
         size = d.size
-        x, y = d.player_x, d.player_y
 
-        rows = []
         for j in range(size):
-            row = []
             for i in range(size):
-                if i == x and j == y:
-                    row.append("🧍")  # joueur
-                else:
-                    row.append("□")
-            rows.append(" ".join(row))
+                cell = self.map_cells[j][i]
 
-        self.map_label.config(text="\n".join(rows))
+                if i == d.player_x and j == d.player_y:
+                    cell.config(bg="#00AAFF")   # couleur du joueur
+                else:
+                    cell.config(bg="#555555")   # couleur normale
+
 
     # ===============================================
     #        LOGIQUE DES BOUTONS
     # ===============================================
 
     def move(self, dx, dy):
-        if self.game.dungeon.move(dx, dy):
-
+        if self.game.dungeon.move(dx, dy) and dx != self.boss_posx and dy!=self.boss_posy :
+            
             room = self.game.dungeon.current_room()
             self.show(f"Nouvelle salle : {room.description}")
 
             # Déclenchement automatique de l'événement
             event_text = self.game.enter_room()
+            self.show(event_text)
+
+            self.update_map()
+            self.update_stats()
+        elif dx == self.boss_posx and dy==self.boss_posy :
+            room = self.game.dungeon.current_room()
+            self.show(f"Nouvelle salle : {room.description}")
+            # Room("Une salle gigantesque... un boss approche !", BossEvent())
+
+            # Déclenchement automatique de l'événement
+            event_text = self.game.enter_boss_room()
             self.show(event_text)
 
             self.update_map()
@@ -192,3 +233,6 @@ class GameGUI:
 
     def run(self):
         self.root.mainloop()
+        
+    def sortir(self):
+        return 0

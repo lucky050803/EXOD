@@ -28,6 +28,6 @@ def generate_room():
 
     # 5 % de chance d'engendrer un boss
     if random.random() < 0.05:
-        return Room("Une salle gigantesque... un boss approche !", BossEvent())
+        return 
 
     return Room(random.choice(descriptions), random.choice(events))
