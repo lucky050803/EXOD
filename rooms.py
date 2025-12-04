@@ -29,3 +29,6 @@ def generate_room():
     
 
     return Room(random.choice(descriptions), random.choice(events))
+
+def generate_boss_room():
+    return Room(random.choice("Une salle gigantesque... un boss approche !"), BossEvent())

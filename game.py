@@ -16,6 +16,7 @@ class Game:
 
         room.visited = True  # marquer la salle comme explorée
         return room.event.trigger(self.player)
+    
     def enter_boss_room(self):
         """Déclenche automatiquement l'événement d'une salle nouvelle"""
         room = self.dungeon.current_room()

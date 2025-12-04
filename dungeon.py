@@ -1,5 +1,5 @@
 import random
-from rooms import generate_room
+from rooms import generate_room, generate_boss_room
 
 class Dungeon:
     def __init__(self, size=5):
@@ -20,3 +20,7 @@ class Dungeon:
 
     def current_room(self):
         return self.grid[self.player_y][self.player_x]
+    
+    def generate_grid_boss_room(self,x,y):
+        self.grid[x-1][y-1] = generate_boss_room()
+

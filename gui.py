@@ -126,6 +126,7 @@ class GameGUI:
         if position == 4:
             self.boss_posx = self.game.dungeon.size
             self.boss_posy = self.game.dungeon.size
+        self.game.dungeon.generate_grid_boss_room(self.boss_posx,self.boss_posy)
     # ===============================================
     #   FONCTIONS D'AFFICHAGE
     # ===============================================
@@ -163,7 +164,7 @@ class GameGUI:
     # ===============================================
 
     def move(self, dx, dy):
-        if self.game.dungeon.move(dx, dy) and dx != self.boss_posx and dy!=self.boss_posy :
+        if self.game.dungeon.move(dx, dy) :
             
             room = self.game.dungeon.current_room()
             self.show(f"Nouvelle salle : {room.description}")
@@ -174,17 +175,8 @@ class GameGUI:
 
             self.update_map()
             self.update_stats()
-        elif dx == self.boss_posx and dy==self.boss_posy :
-            room = self.game.dungeon.current_room()
-            self.show(f"Nouvelle salle : {room.description}")
-            # Room("Une salle gigantesque... un boss approche !", BossEvent())
 
-            # Déclenchement automatique de l'événement
-            event_text = self.game.enter_boss_room()
-            self.show(event_text)
 
-            self.update_map()
-            self.update_stats()
         else:
             self.show("Impossible d'aller dans cette direction.")
 
