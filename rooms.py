@@ -26,8 +26,6 @@ def generate_room():
         TrapEvent()
     ]
 
-    # 5 % de chance d'engendrer un boss
-    if random.random() < 0.05:
-        return 
+    
 
     return Room(random.choice(descriptions), random.choice(events))
