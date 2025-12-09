@@ -22,12 +22,15 @@ class BossEvent(Event):
     def trigger(self, player):
         boss = BossEnemy()
         log = combat(player, boss)
-        xp = 50
-        log += f"\n🔥 XP BOSS +{xp}"
-        lvl = player.add_xp(xp)
-        if lvl:
-            log += "\n" + lvl
-        return log
+        if player.hp <= 0 :
+            return 0
+        else :
+            xp = 50
+            log += f"\n🔥 XP BOSS +{xp}"
+            lvl = player.add_xp(xp)
+            if lvl:
+                log += "\n" + lvl
+            return log
 
 class TreasureEvent(Event):
     def trigger(self, player):

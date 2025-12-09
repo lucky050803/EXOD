@@ -15,6 +15,7 @@ class Game:
             return "Cette salle a déjà été explorée."
 
         room.visited = True  # marquer la salle comme explorée
+        
         return room.event.trigger(self.player)
     
     def enter_boss_room(self):
@@ -25,7 +26,9 @@ class Game:
             return "Cette salle a déjà été explorée."
 
         room.visited = True  # marquer la salle comme explorée
-        return room.event.trigger(self.player)
+        if room.event.trigger(self.player) == 0 :
+            return 0
+        else : return room.event.trigger(self.player)
 
     def save(self):
         save_game(self)

@@ -25,7 +25,7 @@ class Enemy:
 
 class BossEnemy(Enemy):
     def __init__(self):
-        super().__init__(name="Ogre Colossal", hp=40, atk=8, defense=3, xp_gain=50)
+        super().__init__(name="Ogre Colossal", hp=40, atk=10, defense=3, xp_gain=50)
 
 
 def combat(player, enemy):

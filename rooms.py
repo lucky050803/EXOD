@@ -26,8 +26,6 @@ def generate_room():
         TrapEvent()
     ]
 
-    
-
     return Room(random.choice(descriptions), random.choice(events))
 
 def generate_boss_room():

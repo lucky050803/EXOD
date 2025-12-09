@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
+from game import Game
 import random
-
+import time
 class GameGUI:
     def __init__(self, game):
         self.game = game
@@ -113,20 +114,8 @@ class GameGUI:
         self.update_stats()
 
         # Boss
-        position = random.randint(1, 4)
-        if position == 1:
-            self.boss_posx = 0
-            self.boss_posy = 0
-        if position == 2:
-            self.boss_posx = self.game.dungeon.size 
-            self.boss_posy = 0
-        if position == 3:
-            self.boss_posx = 0
-            self.boss_posy = self.game.dungeon.size
-        if position == 4:
-            self.boss_posx = self.game.dungeon.size
-            self.boss_posy = self.game.dungeon.size
-        self.game.dungeon.generate_grid_boss_room(self.boss_posx,self.boss_posy)
+        
+        
     # ===============================================
     #   FONCTIONS D'AFFICHAGE
     # ===============================================
@@ -171,10 +160,19 @@ class GameGUI:
 
             # Déclenchement automatique de l'événement
             event_text = self.game.enter_room()
-            self.show(event_text)
+            if event_text == 0 :
+                self.show(f"Vous êtes morts....... Dommage")
+                self.game = None
+                self.game = Game()
+                
+                #self.text.delete("1.0", tk.END)
+                self.show(f"========================EXOD========================")
+                
+            else : 
+                self.show(event_text)
 
-            self.update_map()
-            self.update_stats()
+                self.update_map()
+                self.update_stats()
 
 
         else:
